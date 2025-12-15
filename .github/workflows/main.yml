@@ -1,0 +1,38 @@
+name: Pipeline Pengujian Otomatis
+
+# 1. Trigger: Jalankan skrip ketika ada 'push' ke branch 'main'
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# 2. Jobs: Tugas yang akan dijalankan
+jobs:
+  build-dan-test:
+    runs-on: ubuntu-latest  # Menggunakan server Linux virtual
+
+    steps:
+    # Langkah 1: Ambil kode dari repository
+    - uses: actions/checkout@v3
+
+    # Langkah 2: Siapkan lingkungan Python
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    # Langkah 3: Install dependency (jika ada)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    # Langkah 4: JALANKAN TEST OTOMATIS
+    # Ini memenuhi syarat soal: "Jalankan skrip otomatisasi"
+    - name: Menjalankan Unit Test
+      run: python -m unittest discover -p "test_*.py"
+
+    # Langkah 5: Report Hasil (Tampil di Log GitHub)
+    - name: Laporan Selesai
+      run: echo "Pipeline Selesai. Semua tes berhasil dilewati!"
